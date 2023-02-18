@@ -21,7 +21,7 @@ git clone --recurse-submodules https://github.com/michaelchanwahyan/sermon-app.g
 bible version legend
 
 | Short Form       | Long Form                                                  | Chinese Name             |
-------------------------------------------------------------------------------------------------------------
+| ---------------- | ---------------------------------------------------------- | ------------------------ |
 | CCV              |                                                            | 新漢語譯本               |
 | CUV              | Chinese Union Version                                      | 和合本                   |
 | LZZ              | Lu Zhen Zhong Bible Translation                            | 呂振中譯本               |

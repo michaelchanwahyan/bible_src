@@ -15,6 +15,11 @@ def readText(infilename):
     return texts
 
 
+def u200bRemoval(inTextLines):
+    outTextLines = [ line.replace("\u200b", "") for line in inTextLines ]
+    return outTextLines
+
+
 def checkInArgCnt():
     inArgCnt = len(sys.argv)
     return inArgCnt
@@ -27,6 +32,7 @@ def topicalPhraseRemoval(inTextLines):
     cn = 0 # chapter number
     vn = 0 # verse number
     isFirstVerse = True
+    multiVerse_extraLineRowCnt = 0 # for handling multi verse in same line
     for textline in textlines:
         textline = textline.strip().replace("\t", " ").replace("  ", " ").replace("  ", " ").replace("  ", " ").replace("  ", " ")
         if "第" in textline and ("章" in textline or "篇" in textline):
@@ -42,7 +48,16 @@ def topicalPhraseRemoval(inTextLines):
                 vn += 1
                 # print(f"{cn}:{vn} {textline}")
                 textSplitRes = textline.split(" ", 1)
-                vn_in_line = int(textSplitRes[0])
+                vn_in_line = textSplitRes[0]
+                try:
+                    vn_in_line = int(vn_in_line)
+                except:
+                    if "-" in vn_in_line: # if there contains multi-verse in same line
+                        vn_curr = int(vn_in_line.split("-")[0])
+                        vn_next = int(vn_in_line.split("-")[1])
+                        multiVerse_extraLineRowCnt = vn_next - vn_curr
+                        vn_in_line = vn_curr
+                    pass
                 if vn != vn_in_line: # check verse number consistence
                     print("verse no. mismatch ! ", textline)
                     break
@@ -53,8 +68,14 @@ def topicalPhraseRemoval(inTextLines):
                     pass
                 else:
                     outTextLines += "\n"
-                outTextLines += f"{cn}:{vn} {textline}"
+                outTextLines += f"{cn}.{vn} {textline}"
                 pass
+            # END OF if re.search(r"[0-9]", textline) is None: # check if textline is not initiated by verse number
+            if multiVerse_extraLineRowCnt > 0:
+                for cnt in range(multiVerse_extraLineRowCnt):
+                    outTextLines += "\n"
+                    vn += 1
+                multiVerse_extraLineRowCnt = 0
             pass
         # END OF if "第" in textline and ("章" in textline or "篇" in textline):
     # END OF for textline in textlines:
@@ -88,6 +109,10 @@ if __name__ == "__main__":
 
     # read in text contents
     textlines = readText(infname)
+    
+    
+    # special char removal
+    textlines = u200bRemoval(textlines)
 
 
     # convert to required text source format

@@ -35,7 +35,7 @@ def topicalPhraseRemoval(inTextLines):
     multiVerse_extraLineRowCnt = 0 # for handling multi verse in same line
     for textline in textlines:
         textline = textline.strip().replace("\t", " ").replace("  ", " ").replace("  ", " ").replace("  ", " ").replace("  ", " ")
-        if "第" in textline and ("章" in textline or "篇" in textline):
+        if "第" == textline[0] and ("章" in textline or "篇" in textline):
             cn += 1
             vn = 0
             continue
@@ -89,6 +89,7 @@ def writeText(outfilename, outtext):
     with open(outfilename, "w") as fp:
         fp.write(outtext)
     fp.close()
+    print(f"new file {outfilename} is written !")
     return
 
 
